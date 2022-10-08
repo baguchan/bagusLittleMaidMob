@@ -2,33 +2,37 @@ package net.baguchan.littlemaidmob.menutype;
 
 import com.mojang.datafixers.util.Pair;
 import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
+import net.baguchan.littlemaidmob.registry.ModMenuTypes;
 import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.Container;
+import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
-import net.minecraft.world.inventory.MenuType;
 import net.minecraft.world.inventory.Slot;
 import net.minecraft.world.item.ItemStack;
 
 public class LittleMaidInventoryMenu extends AbstractContainerMenu {
 	private final Container maidContainer;
-	private final LittleMaidBaseEntity maid;
+	public final LittleMaidBaseEntity maid;
 
 	public LittleMaidInventoryMenu(int windowId, Inventory inv, FriendlyByteBuf data) {
 		this(windowId, inv, data.readVarInt());
 	}
 
 	public LittleMaidInventoryMenu(int p_39656_, Inventory p_39657_, int entityId) {
-		super((MenuType<?>) null, p_39656_);
+		super(ModMenuTypes.LITTLE_MAID_CONTAINER.get(), p_39656_);
 		LittleMaidBaseEntity maid = (LittleMaidBaseEntity) p_39657_.player.level.getEntity(entityId);
-		this.maidContainer = maid.getInventory();
+		if (maid == null)
+			this.maidContainer = new SimpleContainer(18 + 4 + 2);
+		else
+			this.maidContainer = maid.getInventory();
 		this.maid = maid;
 		int i = 3;
-		maid.getInventory().startOpen(p_39657_.player);
+		p_39657_.startOpen(p_39657_.player);
 		int j = -18;
 
 		ResourceLocation atlas = new ResourceLocation("textures/atlas/blocks.png");
@@ -107,50 +111,39 @@ public class LittleMaidInventoryMenu extends AbstractContainerMenu {
 	}
 
 	public boolean stillValid(Player p_39661_) {
-		return this.maidContainer.stillValid(p_39661_) && this.maid.isAlive() && this.maid.distanceTo(p_39661_) < 8.0F;
+		return !this.maid.hasInventoryChanged(this.maid.getInventory()) && this.maidContainer.stillValid(p_39661_) && this.maid.isAlive() && this.maid.distanceTo(p_39661_) < 8.0F;
 	}
 
-	public ItemStack quickMoveStack(Player p_39665_, int p_39666_) {
-		ItemStack itemstack = ItemStack.EMPTY;
-		Slot slot = this.slots.get(p_39666_);
-		if (slot != null && slot.hasItem()) {
-			ItemStack itemstack1 = slot.getItem();
-			itemstack = itemstack1.copy();
-			int i = this.maidContainer.getContainerSize();
-			if (p_39666_ < i) {
-				if (!this.moveItemStackTo(itemstack1, i, this.slots.size(), true)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (this.getSlot(0).mayPlace(itemstack1)) {
-				if (!this.moveItemStackTo(itemstack1, 0, 1, false)) {
-					return ItemStack.EMPTY;
-				}
-			} else if (i <= 1 || !this.moveItemStackTo(itemstack1, 1, i, false)) {
-				int j = i + 27;
-				int k = j + 9;
-				if (p_39666_ >= j && p_39666_ < k) {
-					if (!this.moveItemStackTo(itemstack1, i, j, false)) {
-						return ItemStack.EMPTY;
-					}
-				} else if (p_39666_ >= i && p_39666_ < j) {
-					if (!this.moveItemStackTo(itemstack1, j, k, false)) {
-						return ItemStack.EMPTY;
-					}
-				} else if (!this.moveItemStackTo(itemstack1, j, j, false)) {
-					return ItemStack.EMPTY;
-				}
-
+	@Override
+	public ItemStack quickMoveStack(Player player, int invSlot) {
+		ItemStack newStack = ItemStack.EMPTY;
+		Slot slot = this.slots.get(invSlot);
+		if (slot == null || !slot.hasItem()) {
+			return newStack;
+		}
+		ItemStack originalStack = slot.getItem();
+		newStack = originalStack.copy();
+		if (invSlot < 18) {//メイド->プレイヤー
+			if (!this.moveItemStackTo(originalStack, 24, 60, false)) {
 				return ItemStack.EMPTY;
 			}
-
-			if (itemstack1.isEmpty()) {
-				slot.set(ItemStack.EMPTY);
-			} else {
-				slot.setChanged();
+		} else if (invSlot < 24) {//ハンド、防具->メイド
+			if (!this.moveItemStackTo(originalStack, 0, 18, true)) {
+				return ItemStack.EMPTY;
+			}
+		} else {//プレイヤー->メイド
+			if (!this.moveItemStackTo(originalStack, 0, 18, false)) {
+				return ItemStack.EMPTY;
 			}
 		}
 
-		return itemstack;
+		if (originalStack.isEmpty()) {
+			slot.set(ItemStack.EMPTY);
+		} else {
+			slot.setChanged();
+		}
+
+		return newStack;
 	}
 
 	public void removed(Player p_39663_) {

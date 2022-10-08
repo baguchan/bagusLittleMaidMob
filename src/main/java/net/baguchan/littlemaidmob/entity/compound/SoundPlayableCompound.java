@@ -1,12 +1,11 @@
 package net.baguchan.littlemaidmob.entity.compound;
 
 import net.baguchan.littlemaidmob.client.resource.manager.LMSoundManager;
+import net.baguchan.littlemaidmob.message.SyncSoundConfigMessage;
 import net.baguchan.littlemaidmob.resource.holder.ConfigHolder;
 import net.baguchan.littlemaidmob.resource.manager.LMConfigManager;
-import net.minecraft.util.RandomSource;
 import net.minecraft.world.entity.Entity;
 
-import java.util.Random;
 import java.util.function.Supplier;
 
 public class SoundPlayableCompound implements SoundPlayable {
@@ -47,7 +46,7 @@ public class SoundPlayableCompound implements SoundPlayable {
                             LMSoundManager.INSTANCE.play(soundFileName, entity.getSoundSource(),
                                     1F, 1F, entity.getLevel().getRandom(), entity.getX(), entity.getEyeY(), entity.getZ()));
         } else {
-            //LMSoundPacket.sendS2CPacket(entity, soundName);
+            SyncSoundConfigMessage.sendS2CPacket(entity, soundName);
         }
     }
 

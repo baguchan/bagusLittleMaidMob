@@ -10,7 +10,7 @@ import net.minecraftforge.registries.ForgeRegistries;
 import net.minecraftforge.registries.RegistryObject;
 
 @Mod.EventBusSubscriber(modid = LittleMaidMod.MODID, bus = Mod.EventBusSubscriber.Bus.MOD)
-public class ModMenus {
+public class ModMenuTypes {
     public static final DeferredRegister<MenuType<?>> MENU_REGISTRY = DeferredRegister.create(ForgeRegistries.MENU_TYPES, LittleMaidMod.MODID);
 
     public static final RegistryObject<MenuType<LittleMaidInventoryMenu>> LITTLE_MAID_CONTAINER =

@@ -3,12 +3,19 @@ package net.baguchan.littlemaidmob.client.screen;
 import com.mojang.blaze3d.systems.RenderSystem;
 import com.mojang.blaze3d.vertex.PoseStack;
 import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
+import net.baguchan.littlemaidmob.entity.compound.IHasMultiModel;
 import net.baguchan.littlemaidmob.menutype.LittleMaidInventoryMenu;
+import net.baguchan.littlemaidmob.message.SyncSoundConfigMessage;
+import net.baguchan.littlemaidmob.resource.manager.LMConfigManager;
+import net.minecraft.client.gui.components.Button;
 import net.minecraft.client.gui.screens.inventory.AbstractContainerScreen;
 import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
+import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.entity.player.Inventory;
+import net.minecraft.world.item.ItemStack;
+import net.minecraft.world.item.Items;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 
@@ -18,14 +25,75 @@ public class LittleMaidScreen extends AbstractContainerScreen<LittleMaidInventor
 	private final LittleMaidBaseEntity maid;
 	private float xMouse;
 	private float yMouse;
+	private static final ItemStack ARMOR = Items.LEATHER_CHESTPLATE.getDefaultInstance();
+	private static final ItemStack BOOK = Items.BOOK.getDefaultInstance();
+	private static final ItemStack NOTE = Items.NOTE_BLOCK.getDefaultInstance();
+	private static final ItemStack FEATHER = Items.FEATHER.getDefaultInstance();
 
 
-	public LittleMaidScreen(LittleMaidInventoryMenu maidInventoryContainer, Inventory inventory, LittleMaidBaseEntity maid) {
-		super(maidInventoryContainer, inventory, maid.getDisplayName());
-		this.maid = maid;
+	public LittleMaidScreen(LittleMaidInventoryMenu maidInventoryContainer, Inventory inventory, Component titleIn) {
+		super(maidInventoryContainer, inventory, titleIn);
+		this.maid = maidInventoryContainer.maid;
 		this.passEvents = false;
 	}
 
+	@Override
+	protected void init() {
+		super.init();
+		if (this.maid == null) {
+			minecraft.setScreen(null);
+			return;
+		}
+
+		int left = (int) ((this.width - leftPos) / 2F) - 5;
+		int top = (int) ((this.height - topPos) / 2F);
+		int size = 20;
+		int layer = -1;
+		/*this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
+				button -> OpenIFFScreenPacket.sendC2SPacket(maid)) {
+			@Override
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
+				super.renderButton(matrices, mouseX, mouseY, partialTicks);
+				itemRenderer.renderGuiItem(BOOK, this.x - 8 + this.width / 2, this.y - 8 + this.height / 2);
+			}
+		});*/
+		this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
+				button -> {
+					maid.setConfigHolder(LMConfigManager.INSTANCE.getAnyConfig());
+					SyncSoundConfigMessage.sendC2SPacket(maid, maid.getConfigHolder().getName());
+				}, (button, matrices, x, y) -> {
+			String text = maid.getConfigHolder().getName();
+			float renderX = Math.max(0, x - font.width(text) / 2F);
+			font.draw(matrices, text, renderX,
+					y - font.lineHeight / 2F, 0xFFFFFF);
+		}) {
+			@Override
+			public void renderButton(PoseStack matrices, int mouseX, int mouseY, float partialTicks) {
+				super.renderButton(matrices, mouseX, mouseY, partialTicks);
+				itemRenderer.renderGuiItem(NOTE, this.x - 8 + this.width / 2, this.y - 8 + this.height / 2);
+			}
+		});
+		this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
+				button -> minecraft.setScreen(new ModelSelectScreen(title, maid.level, (IHasMultiModel) maid))) {
+			@Override
+			public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float partialTicks) {
+				super.renderButton(matrixStack, mouseX, mouseY, partialTicks);
+				itemRenderer.renderGuiItem(ARMOR, this.x - 8 + this.width / 2, this.y - 8 + this.height / 2);
+			}
+		});
+		this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
+				button -> {
+					maid.setMovingState(LittleMaidBaseEntity.MoveState.get(maid.getMovingState()) == LittleMaidBaseEntity.MoveState.FREEDOM
+							? LittleMaidBaseEntity.MoveState.WAITING
+							: LittleMaidBaseEntity.MoveState.FREEDOM);
+				}) {
+			@Override
+			public void renderButton(PoseStack matrixStack, int mouseX, int mouseY, float delta) {
+				super.renderButton(matrixStack, mouseX, mouseY, delta);
+				itemRenderer.renderGuiItem(FEATHER, this.x - 8 + this.width / 2, this.y - 8 + this.height / 2);
+			}
+		});
+	}
 
 	protected void renderBg(PoseStack p_98821_, float p_98822_, int p_98823_, int p_98824_) {
 		RenderSystem.setShader(GameRenderer::getPositionTexShader);

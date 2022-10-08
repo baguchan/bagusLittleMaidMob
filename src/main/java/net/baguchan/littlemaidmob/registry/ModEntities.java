@@ -1,6 +1,7 @@
 package net.baguchan.littlemaidmob.registry;
 
 import net.baguchan.littlemaidmob.LittleMaidMod;
+import net.baguchan.littlemaidmob.client.screen.ModelSelectScreen;
 import net.baguchan.littlemaidmob.entity.LittleMaid;
 import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.minecraft.world.entity.EntityType;
@@ -17,7 +18,8 @@ public class ModEntities {
     public static final DeferredRegister<EntityType<?>> ENTITIES_REGISTRY = DeferredRegister.create(ForgeRegistries.ENTITY_TYPES, LittleMaidMod.MODID);
 
     public static final RegistryObject<EntityType<MultiModelEntity>> MULTI_MODEL = ENTITIES_REGISTRY.register("multi_model", () -> EntityType.Builder.<MultiModelEntity>of(MultiModelEntity::new, MobCategory.CREATURE).sized(0.6F, 1.65F).build(prefix("multi_model")));
-    public static final RegistryObject<EntityType<LittleMaid>> LITTLE_MAID = ENTITIES_REGISTRY.register("little_maid", () -> EntityType.Builder.of(LittleMaid::new, MobCategory.CREATURE).sized(0.6F, 1.65F).build(prefix("little_maid")));
+	public static final RegistryObject<EntityType<LittleMaid>> LITTLE_MAID = ENTITIES_REGISTRY.register("little_maid", () -> EntityType.Builder.of(LittleMaid::new, MobCategory.CREATURE).sized(0.6F, 1.65F).build(prefix("little_maid")));
+	public static final RegistryObject<EntityType<ModelSelectScreen.DummyModelEntity>> DUMMY = ENTITIES_REGISTRY.register("dummy", () -> EntityType.Builder.<ModelSelectScreen.DummyModelEntity>of(ModelSelectScreen.DummyModelEntity::new, MobCategory.MISC).sized(0.6F, 1.65F).noSummon().build(prefix("dummy")));
 
     private static String prefix(String path) {
         return LittleMaidMod.MODID + ":" + path;

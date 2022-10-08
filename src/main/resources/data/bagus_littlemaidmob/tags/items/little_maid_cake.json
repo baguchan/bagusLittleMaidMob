@@ -1,0 +1,14 @@
+{
+  "replace": false,
+  "values": [
+    "minecraft:cake",
+    {
+      "id": "tofucraft:tofucake",
+      "required": false
+    },
+    {
+      "id": "tofucraft:zundatofucake",
+      "required": false
+    }
+  ]
+}

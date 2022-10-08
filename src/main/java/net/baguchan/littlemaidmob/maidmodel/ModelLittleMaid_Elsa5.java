@@ -29,7 +29,7 @@ public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends Model
 
 	@Override
 	public void initModel(ModelPart root) {
-		super.initModel(root);
+		this.root = root.getChild("root");
 		this.head = this.root.getChild("head");
 		this.hat = this.head.getChild("hat");
 		this.eyeR = this.head.getChild("eyeR");
@@ -38,8 +38,8 @@ public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends Model
 		this.skirt = this.body.getChild("skirt");
 		this.left_leg = this.root.getChild("left_leg");
 		this.right_leg = this.root.getChild("right_leg");
-		this.left_arm = this.root.getChild("left_arm");
-		this.right_arm = this.root.getChild("right_arm");
+		this.left_hand = this.root.getChild("left_hand");
+		this.right_hand = this.root.getChild("right_hand");
 	}
 
 	@Override
@@ -61,9 +61,9 @@ public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends Model
 
 		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, -20.0F, 0.0F));
 
-		PartDefinition right_eye = head.addOrReplaceChild("right_eye", CubeListBuilder.create().texOffs(1, 4).addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-2.0F, -1.0F, -4.05F));
+		PartDefinition right_eye = head.addOrReplaceChild("eyeR", CubeListBuilder.create().texOffs(1, 4).addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-2.0F, -1.0F, -4.05F));
 
-		PartDefinition left_eye = head.addOrReplaceChild("left_eye", CubeListBuilder.create().texOffs(3, 4).mirror().addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(2.0F, -1.0F, -4.05F));
+		PartDefinition left_eye = head.addOrReplaceChild("eyeL", CubeListBuilder.create().texOffs(3, 4).mirror().addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(2.0F, -1.0F, -4.05F));
 
 		PartDefinition hat = head.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 10.0F, 8.0F, new CubeDeformation(0.01F + size)), PartPose.offset(0.0F, 0.0F, 0.0F));
 

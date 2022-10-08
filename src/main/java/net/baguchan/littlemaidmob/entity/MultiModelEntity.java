@@ -13,34 +13,43 @@ import net.baguchan.littlemaidmob.resource.manager.LMTextureManager;
 import net.baguchan.littlemaidmob.resource.util.LMSounds;
 import net.baguchan.littlemaidmob.resource.util.TextureColors;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.FriendlyByteBuf;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.server.level.ServerLevel;
+import net.minecraft.world.DifficultyInstance;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
+import net.minecraft.world.entity.AgeableMob;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.Mob;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.MobSpawnType;
 import net.minecraft.world.entity.Pose;
+import net.minecraft.world.entity.SpawnGroupData;
+import net.minecraft.world.entity.TamableAnimal;
 import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
 import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
+import net.minecraft.world.level.ServerLevelAccessor;
 import net.minecraft.world.phys.Vec3;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+import org.jetbrains.annotations.Nullable;
 
 import java.util.Optional;
 
 /**
  * テスト用エンティティ
  */
-public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, SoundPlayable {
+public class MultiModelEntity extends TamableAnimal implements IHasMultiModel, SoundPlayable {
     protected final MultiModelCompound multiModel;
     protected final SoundPlayableCompound soundPlayer;
+
     public MultiModelEntity(Level worldIn) {
         this(ModEntities.MULTI_MODEL.get(), worldIn);
     }
@@ -52,7 +61,6 @@ public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, S
                         .orElseThrow(() -> new IllegalStateException("デフォルトモデルが存在しません。")),
                 LMTextureManager.INSTANCE.getTexture("default")
                         .orElseThrow(() -> new IllegalStateException("デフォルトモデルが存在しません。")));
-        this.setRandomTexture();
         soundPlayer = new SoundPlayableCompound(this,
                 () -> multiModel.getTextureHolder(Layer.SKIN, Part.HEAD).getTextureName());
     }
@@ -63,6 +71,25 @@ public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, S
 
     public static AttributeSupplier.Builder createAttributes() {
         return Mob.createMobAttributes().add(Attributes.ATTACK_DAMAGE);
+    }
+
+    @Override
+    public SpawnGroupData finalizeSpawn(ServerLevelAccessor p_146746_, DifficultyInstance p_146747_, MobSpawnType p_146748_, @Nullable SpawnGroupData p_146749_, @Nullable CompoundTag p_146750_) {
+        this.setRandomTexture();
+
+        return super.finalizeSpawn(p_146746_, p_146747_, p_146748_, p_146749_, p_146750_);
+    }
+
+    @Override
+    public boolean isFood(ItemStack p_27600_) {
+        return false;
+    }
+
+    //STOP EVERYTING! - by queen
+    @Nullable
+    @Override
+    public AgeableMob getBreedOffspring(ServerLevel p_146743_, AgeableMob p_146744_) {
+        return null;
     }
 
     @Override
@@ -178,6 +205,16 @@ public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, S
     }
 
     @Override
+    public void setTame(boolean p_21836_) {
+        this.setContract(p_21836_);
+    }
+
+    @Override
+    public boolean isTame() {
+        return this.isContract();
+    }
+
+    @Override
     public boolean isContract() {
         return multiModel.isContract();
     }
@@ -223,7 +260,15 @@ public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, S
         return multiModel;
     }
 
-    public void readMultiModel(MultiModelCompound multiModelCompound){
+    public void writeCustomPacket(FriendlyByteBuf packet) {
+        multiModel.writeToPacket(packet);
+    }
+
+    public void readCustomPacket(FriendlyByteBuf packet) {
+        multiModel.readFromPacket(packet);
+    }
+
+    public void readMultiModel(MultiModelCompound multiModelCompound) {
         CompoundTag tag = new CompoundTag();
         multiModelCompound.writeToNbt(tag);
         this.multiModel.readFromNbt(tag);

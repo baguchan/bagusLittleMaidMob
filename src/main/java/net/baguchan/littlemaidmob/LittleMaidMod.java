@@ -10,8 +10,11 @@ import net.baguchan.littlemaidmob.client.resource.manager.LMSoundManager;
 import net.baguchan.littlemaidmob.entity.compound.IHasMultiModel;
 import net.baguchan.littlemaidmob.maidmodel.ModelLittleMaid_Elsa5;
 import net.baguchan.littlemaidmob.maidmodel.ModelLittleMaid_Orign;
-import net.baguchan.littlemaidmob.message.SyncMaidModelMessage;
+import net.baguchan.littlemaidmob.message.SyncMultiModelPacket;
+import net.baguchan.littlemaidmob.message.SyncSoundConfigMessage;
 import net.baguchan.littlemaidmob.registry.ModEntities;
+import net.baguchan.littlemaidmob.registry.ModItems;
+import net.baguchan.littlemaidmob.registry.ModMenuTypes;
 import net.baguchan.littlemaidmob.resource.classloader.MultiModelClassLoader;
 import net.baguchan.littlemaidmob.resource.loader.LMConfigLoader;
 import net.baguchan.littlemaidmob.resource.loader.LMFileLoader;
@@ -23,13 +26,11 @@ import net.baguchan.littlemaidmob.resource.util.LMSounds;
 import net.baguchan.littlemaidmob.resource.util.ResourceHelper;
 import net.minecraft.client.Minecraft;
 import net.minecraft.resources.ResourceLocation;
-import net.minecraft.server.packs.PackType;
 import net.minecraft.sounds.SoundEvent;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
 import net.minecraftforge.common.MinecraftForge;
-import net.minecraftforge.event.AddPackFindersEvent;
 import net.minecraftforge.eventbus.api.IEventBus;
 import net.minecraftforge.fml.DistExecutor;
 import net.minecraftforge.fml.ModLoadingContext;
@@ -37,9 +38,7 @@ import net.minecraftforge.fml.common.Mod;
 import net.minecraftforge.fml.config.ModConfig;
 import net.minecraftforge.fml.event.lifecycle.FMLClientSetupEvent;
 import net.minecraftforge.fml.event.lifecycle.FMLCommonSetupEvent;
-import net.minecraftforge.fml.event.lifecycle.FMLConstructModEvent;
 import net.minecraftforge.fml.javafmlmod.FMLJavaModLoadingContext;
-import net.minecraftforge.fml.loading.FMLEnvironment;
 import net.minecraftforge.network.NetworkRegistry;
 import net.minecraftforge.network.simple.SimpleChannel;
 import org.slf4j.Logger;
@@ -66,22 +65,22 @@ public class LittleMaidMod
             .simpleChannel();
 
     // Create a Deferred Register to hold Blocks which will all be registered under the "examplemod" namespace
-    public LittleMaidMod()
-    {
-        IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
+    public LittleMaidMod() {
+		IEventBus modEventBus = FMLJavaModLoadingContext.get().getModEventBus();
 
-        // Register the commonSetup method for modloading
+		// Register the commonSetup method for modloading
+		ModMenuTypes.MENU_REGISTRY.register(modEventBus);
+		ModItems.ITEM_REGISTRY.register(modEventBus);
+		ModEntities.ENTITIES_REGISTRY.register(modEventBus);
 
-        ModEntities.ENTITIES_REGISTRY.register(modEventBus);
 
+		initFileLoader();
+		initModelLoader();
 
-        initFileLoader();
-        initModelLoader();
+		this.setupMessages();
 
-        this.setupMessages();
-
-        modEventBus.addListener(this::clientSetup);
-        modEventBus.addListener(this::commonSetup);
+		modEventBus.addListener(this::clientSetup);
+		modEventBus.addListener(this::commonSetup);
 
         // Register ourselves for server and other game events we are interested in
         MinecraftForge.EVENT_BUS.register(this);
@@ -90,11 +89,15 @@ public class LittleMaidMod
     }
 
     private void setupMessages() {
-        CHANNEL.messageBuilder(SyncMaidModelMessage.class, 0)
-                .encoder(SyncMaidModelMessage::serialize).decoder(SyncMaidModelMessage::deserialize)
-                .consumerMainThread(SyncMaidModelMessage::handle)
-                .add();
-    }
+		CHANNEL.messageBuilder(SyncSoundConfigMessage.class, 0)
+				.encoder(SyncSoundConfigMessage::toBytes).decoder(SyncSoundConfigMessage::new)
+				.consumerMainThread(SyncSoundConfigMessage::handle)
+				.add();
+		CHANNEL.messageBuilder(SyncMultiModelPacket.class, 1)
+				.encoder(SyncMultiModelPacket::toBytes).decoder(SyncMultiModelPacket::new)
+				.consumerMainThread(SyncMultiModelPacket::handle)
+				.add();
+	}
 
     public static void initFileLoader() {
         LMFileLoader fileLoader = LMFileLoader.INSTANCE;
