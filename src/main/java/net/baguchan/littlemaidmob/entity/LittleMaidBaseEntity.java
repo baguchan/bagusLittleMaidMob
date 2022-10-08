@@ -312,7 +312,7 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 		super.setItemSlot(slot, stack);
 		if (slot.getType() == EquipmentSlot.Type.ARMOR) {
 			this.inventory.setItem(1 + 18 + slot.getIndex(), stack);
-			//multiModel.updateArmor();
+			multiModel.updateArmor();
 		} else if (slot == EquipmentSlot.MAINHAND) {
 			this.inventory.setItem(0, stack);
 		} else if (slot == EquipmentSlot.OFFHAND) {
