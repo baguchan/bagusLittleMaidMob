@@ -34,23 +34,45 @@ public class LittleMaidInventoryMenu extends AbstractContainerMenu {
 		int i = 3;
 		p_39657_.startOpen(p_39657_.player);
 		int j = -18;
+		layoutMaidContainerSlots();
+		layoutPlayerInventorySlots(p_39657_, 8, 126);
+	}
 
-		ResourceLocation atlas = new ResourceLocation("textures/atlas/blocks.png");
-		//index 0~17
-		for (int i1 = 0; i1 < 2; ++i1) {
-			for (int k1 = 0; k1 < 9; ++k1) {
-				this.addSlot(new Slot(maidContainer, k1 + i1 * 9 + 9 + 1, 8 + k1 * 18, 76 + i1 * 18 + -18));
-			}
+	private int addSlotRange(Container handler, int index, int x, int y, int amount, int dx) {
+		for (int i = 0; i < amount; i++) {
+			addSlot(new Slot(handler, index, x, y));
+			x += dx;
+			index++;
 		}
+		return index;
+	}
+
+	private int addSlotBox(Container handler, int index, int x, int y, int horAmount, int dx, int verAmount, int dy) {
+		for (int j = 0; j < verAmount; j++) {
+			index = addSlotRange(handler, index, x, y, horAmount, dx);
+			y += dy;
+		}
+		return index;
+	}
+
+	private void layoutPlayerInventorySlots(Inventory playerInventory, int leftCol, int topRow) {
+		// Player inventory
+		addSlotBox(playerInventory, 9, leftCol, topRow, 9, 18, 3, 18);
+
+		// Hotbar
+		topRow += 58;
+		addSlotRange(playerInventory, 0, leftCol, topRow, 9, 18);
+	}
+
+	private void layoutMaidContainerSlots() {
+		//index 0~17
+		addSlotBox(maidContainer, 1, 8, 76, 9, 18, 2, 18);
 
 		//18~19
 		addSlot(new Slot(maidContainer, 0, 116, 44));
-		addSlot(new Slot(maidContainer, 1 + 18 + 4, 152, 44) {
-			@Override
-			public Pair<ResourceLocation, ResourceLocation> getNoItemIcon() {
-				return Pair.of(atlas, new ResourceLocation("item/empty_armor_slot_shield"));
-			}
-		});
+		addSlot(new Slot(maidContainer, 1 + 18 + 4, 152, 44));
+
+		ResourceLocation atlas = new ResourceLocation("textures/atlas/blocks.png");
 
 		//20~23
 		addSlot(new Slot(maidContainer, 1 + 18 + EquipmentSlot.HEAD.getIndex(), 8, 8) {
@@ -97,17 +119,6 @@ public class LittleMaidInventoryMenu extends AbstractContainerMenu {
 				return Pair.of(atlas, new ResourceLocation("item/empty_armor_slot_boots"));
 			}
 		});
-
-		for (int i1 = 0; i1 < 3; ++i1) {
-			for (int k1 = 0; k1 < 9; ++k1) {
-				this.addSlot(new Slot(p_39657_, k1 + i1 * 9 + 9, 8 + k1 * 18, 102 + i1 * 18 + -18));
-			}
-		}
-
-		for (int j1 = 0; j1 < 9; ++j1) {
-			this.addSlot(new Slot(p_39657_, j1, 8 + j1 * 18, 142));
-		}
-
 	}
 
 	public boolean stillValid(Player p_39661_) {

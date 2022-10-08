@@ -25,6 +25,7 @@ public class ClientRegistrar {
 	public static void registerEntityRenders(EntityRenderersEvent.RegisterRenderers event) {
 		event.registerEntityRenderer(ModEntities.MULTI_MODEL.get(), MultiModelRenderer::new);
 		event.registerEntityRenderer(ModEntities.LITTLE_MAID.get(), MultiModelRenderer::new);
+		event.registerEntityRenderer(ModEntities.DUMMY.get(), MultiModelRenderer::new);
 	}
 
 	@SubscribeEvent

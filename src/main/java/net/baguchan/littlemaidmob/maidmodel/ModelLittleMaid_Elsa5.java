@@ -1,6 +1,6 @@
 package net.baguchan.littlemaidmob.maidmodel;
 
-import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
+import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -9,16 +9,13 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-/**
- * �x�[�V�b�N���f��
- * �g��1.75�u���b�N��
- */
-public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends ModelLittleMaidBase<T> {
+public class ModelLittleMaid_Elsa5<T extends MultiModelEntity> extends ModelLittleMaidBase<T> {
 
 	//added fields
 	public ModelPart eyeR;
 	public ModelPart eyeL;
 	public ModelPart hat;
+
 	//TODO Sorry!
 	/*public ModelPart Ponytail;
 	public ModelPart BunchR;

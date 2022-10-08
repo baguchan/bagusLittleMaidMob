@@ -1,6 +1,7 @@
 package net.baguchan.littlemaidmob.maidmodel;
 
 import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
+import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.minecraft.client.model.geom.ModelPart;
 import net.minecraft.client.model.geom.PartPose;
 import net.minecraft.client.model.geom.builders.CubeDeformation;
@@ -13,7 +14,7 @@ import net.minecraft.util.Mth;
 /**
  * LMM用に最適化
  */
-public abstract class ModelLittleMaidBase<T extends LittleMaidBaseEntity> extends ModelMultiBase<T> {
+public abstract class ModelLittleMaidBase<T extends MultiModelEntity> extends ModelMultiBase<T> {
 
 	//fields
 	public ModelPart torso;
@@ -140,7 +141,7 @@ public abstract class ModelLittleMaidBase<T extends LittleMaidBaseEntity> extend
 		this.left_hand.xRot = Mth.cos(limbSwing * 0.6662F) * 2.0F * limbSwingAmount * 0.5F;
 		this.right_leg.xRot = Mth.cos(limbSwing * 0.6662F) * 1.4F * limbSwingAmount;
 		this.left_leg.xRot = Mth.cos(limbSwing * 0.6662F + (float) Math.PI) * 1.4F * limbSwingAmount;
-		if (LittleMaidBaseEntity.MoveState.get(entity.getMovingState()) == LittleMaidBaseEntity.MoveState.WAITING) {
+		if (entity instanceof LittleMaidBaseEntity && LittleMaidBaseEntity.MoveState.get(((LittleMaidBaseEntity) entity).getMovingState()) == LittleMaidBaseEntity.MoveState.WAITING) {
 			this.right_hand.yRot = -0.4F;
 			this.left_hand.yRot = 0.4F;
 			this.right_hand.xRot = -0.8F;

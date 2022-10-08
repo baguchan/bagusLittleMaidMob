@@ -24,14 +24,18 @@ import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
 import net.minecraft.world.SimpleContainer;
 import net.minecraft.world.SimpleMenuProvider;
+import net.minecraft.world.damagesource.DamageSource;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.SlotAccess;
+import net.minecraft.world.entity.ai.attributes.AttributeSupplier;
+import net.minecraft.world.entity.ai.attributes.Attributes;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
 import net.minecraft.world.entity.npc.InventoryCarrier;
 import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.ArmorItem;
 import net.minecraft.world.item.Item;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -55,6 +59,10 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 		super(p_21683_, p_21684_);
 		((GroundPathNavigation) getNavigation()).setCanPassDoors(true);
 		this.createInventory();
+	}
+
+	public static AttributeSupplier.Builder createAttributes() {
+		return MultiModelEntity.createAttributes().add(Attributes.MAX_HEALTH, 20.0F).add(Attributes.MOVEMENT_SPEED, 0.22F);
 	}
 
 	protected void createInventory() {
@@ -283,6 +291,44 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 		}
 	}
 
+	protected void hurtArmor(DamageSource p_36251_, float p_36252_) {
+		this.hurtArmor(p_36251_, p_36252_, false);
+	}
+
+	protected void hurtHelmet(DamageSource p_150103_, float p_150104_) {
+		this.hurtArmor(p_150103_, p_150104_, true);
+	}
+
+	public void hurtArmor(DamageSource p_150073_, float p_150074_, boolean onlyHelmet) {
+		if (!(p_150074_ <= 0.0F)) {
+			p_150074_ /= 4.0F;
+			if (p_150074_ < 1.0F) {
+				p_150074_ = 1.0F;
+			}
+
+			if (!onlyHelmet) {
+				int i = 0;
+				for (ItemStack itemstack : this.getArmorSlots()) {
+					if ((!p_150073_.isFire() || !itemstack.getItem().isFireResistant()) && itemstack.getItem() instanceof ArmorItem) {
+						int finalI = i;
+						itemstack.hurtAndBreak((int) p_150074_, this, (p_35997_) -> {
+							p_35997_.broadcastBreakEvent(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, finalI));
+						});
+						i++;
+					}
+				}
+			} else {
+				ItemStack itemstack = this.getItemBySlot(EquipmentSlot.HEAD);
+				if ((!p_150073_.isFire() || !itemstack.getItem().isFireResistant()) && itemstack.getItem() instanceof ArmorItem) {
+					itemstack.hurtAndBreak((int) p_150074_, this, (p_35997_) -> {
+						p_35997_.broadcastBreakEvent(EquipmentSlot.byTypeAndIndex(EquipmentSlot.Type.ARMOR, EquipmentSlot.HEAD.getIndex()));
+					});
+				}
+			}
+
+		}
+	}
+
 	@Override
 	public ItemStack getProjectile(ItemStack stack) {
 		if (!(stack.getItem() instanceof ProjectileWeaponItem)) {
@@ -322,13 +368,14 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 
 	@Override
 	public ItemStack getItemBySlot(EquipmentSlot slot) {
-
-		if (slot.getType() == EquipmentSlot.Type.ARMOR) {
-			return this.inventory.getItem(1 + 18 + slot.getIndex());
-		} else if (slot == EquipmentSlot.MAINHAND) {
-			return this.inventory.getItem(0);
-		} else if (slot == EquipmentSlot.OFFHAND) {
-			return this.inventory.getItem(18 + 4 + 1);
+		if (this.inventory != null) {
+			if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+				return this.inventory.getItem(1 + 18 + slot.getIndex());
+			} else if (slot == EquipmentSlot.MAINHAND) {
+				return this.inventory.getItem(0);
+			} else if (slot == EquipmentSlot.OFFHAND) {
+				return this.inventory.getItem(18 + 4 + 1);
+			}
 		}
 
 		return ItemStack.EMPTY;

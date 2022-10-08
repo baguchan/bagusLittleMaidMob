@@ -1,17 +1,14 @@
 package net.baguchan.littlemaidmob.unused;
 
-import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
+import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.baguchan.littlemaidmob.maidmodel.ModelLittleMaidBase;
-import net.minecraft.client.model.geom.ModelPart;
-
-import java.util.Random;
 
 /**
  * ���֐߃��f��
  * �g��2.25�u���b�N��
  */
-public class ModelLittleMaid_Beverly7<T extends LittleMaidBaseEntity> extends ModelLittleMaidBase<T> {
-    public ModelLittleMaid_Beverly7(){
+public class ModelLittleMaid_Beverly7<T extends MultiModelEntity> extends ModelLittleMaidBase<T> {
+    public ModelLittleMaid_Beverly7() {
     }
 /*
     //added fields

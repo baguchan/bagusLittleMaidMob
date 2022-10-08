@@ -3,6 +3,7 @@ package net.baguchan.littlemaidmob.registry;
 import net.baguchan.littlemaidmob.LittleMaidMod;
 import net.baguchan.littlemaidmob.client.screen.ModelSelectScreen;
 import net.baguchan.littlemaidmob.entity.LittleMaid;
+import net.baguchan.littlemaidmob.entity.LittleMaidBaseEntity;
 import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.MobCategory;
@@ -27,7 +28,8 @@ public class ModEntities {
 
     @SubscribeEvent
     public static void registerEntity(EntityAttributeCreationEvent event) {
-        event.put(MULTI_MODEL.get(), MultiModelEntity.createAttributes().build());
-        event.put(LITTLE_MAID.get(), MultiModelEntity.createAttributes().build());
-    }
+		event.put(MULTI_MODEL.get(), MultiModelEntity.createAttributes().build());
+		event.put(LITTLE_MAID.get(), LittleMaidBaseEntity.createAttributes().build());
+		event.put(DUMMY.get(), MultiModelEntity.createAttributes().build());
+	}
 }

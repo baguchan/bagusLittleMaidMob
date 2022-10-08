@@ -35,6 +35,8 @@ public class LittleMaidScreen extends AbstractContainerScreen<LittleMaidInventor
 		super(maidInventoryContainer, inventory, titleIn);
 		this.maid = maidInventoryContainer.maid;
 		this.passEvents = false;
+		this.imageHeight = 256;
+		this.imageWidth = 256;
 	}
 
 	@Override
@@ -45,8 +47,8 @@ public class LittleMaidScreen extends AbstractContainerScreen<LittleMaidInventor
 			return;
 		}
 
-		int left = (int) ((this.width - leftPos) / 2F) - 5;
-		int top = (int) ((this.height - topPos) / 2F);
+		int left = (int) ((this.width - imageWidth) / 2F) - 5;
+		int top = (int) ((this.height - imageHeight) / 2F);
 		int size = 20;
 		int layer = -1;
 		/*this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
@@ -101,7 +103,7 @@ public class LittleMaidScreen extends AbstractContainerScreen<LittleMaidInventor
 		RenderSystem.setShaderTexture(0, HORSE_INVENTORY_LOCATION);
 		int i = (this.width - this.imageWidth) / 2;
 		int j = (this.height - this.imageHeight) / 2;
-		this.blit(p_98821_, i, j, 0, 0, this.imageWidth, this.imageHeight);
+		this.blit(p_98821_, this.leftPos, this.topPos, 0, 0, this.imageWidth, this.imageHeight);
 
 		InventoryScreen.renderEntityInInventory(i + 51, j + 60, 17, (float) (i + 51) - this.xMouse, (float) (j + 75 - 50) - this.yMouse, this.maid);
 	}

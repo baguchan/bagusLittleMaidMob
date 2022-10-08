@@ -907,18 +907,8 @@ public class ModelSelectScreen extends Screen {
 		}
 
 		@Override
-		public Iterable<ItemStack> getArmorSlots() {
-			return null;
-		}
-
-		@Override
 		public ItemStack getItemBySlot(EquipmentSlot p_21127_) {
 			return ItemStack.EMPTY;
-		}
-
-		@Override
-		public void setItemSlot(EquipmentSlot p_21036_, ItemStack p_21037_) {
-
 		}
 
 		@Override
