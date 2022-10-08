@@ -5,7 +5,6 @@ import net.baguchan.littlemaidmob.LittleMaidMod;
 import net.baguchan.littlemaidmob.client.util.ModelLayerUtils;
 import net.baguchan.littlemaidmob.entity.MultiModelEntity;
 import net.baguchan.littlemaidmob.entity.compound.IHasMultiModel;
-import net.baguchan.littlemaidmob.maidmodel.ModelBase;
 import net.baguchan.littlemaidmob.maidmodel.ModelMultiBase;
 import net.minecraft.client.Minecraft;
 import net.minecraft.client.model.EntityModel;
@@ -16,8 +15,6 @@ import net.minecraft.client.renderer.entity.MobRenderer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
-//そのまま使ってもいいし継承して使ってもいい
-//別な奴を継承しながら使いたいなら移譲でどうにかするか自作してね
 @OnlyIn(Dist.CLIENT)
 public class MultiModelRenderer<T extends MultiModelEntity> extends MobRenderer<T, EntityModel<T>> {
     private static final ResourceLocation NULL_TEXTURE = new ResourceLocation(LittleMaidMod.MODID, "null");

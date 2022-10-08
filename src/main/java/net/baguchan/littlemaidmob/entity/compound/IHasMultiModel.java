@@ -29,10 +29,6 @@ public interface IHasMultiModel {
 
     boolean isContract();
 
-    void setMale(boolean isMale);
-
-    boolean isMale();
-
     Optional<IMultiModel> getModel(Layer layer, Part part);
 
     @OnlyIn(Dist.CLIENT)

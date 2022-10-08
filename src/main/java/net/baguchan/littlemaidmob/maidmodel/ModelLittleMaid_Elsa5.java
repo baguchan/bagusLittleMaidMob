@@ -9,8 +9,6 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 
-import java.util.Random;
-
 /**
  * �x�[�V�b�N���f��
  * �g��1.75�u���b�N��
@@ -49,27 +47,29 @@ public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends Model
 		MeshDefinition meshdefinition = new MeshDefinition();
 		PartDefinition partdefinition = meshdefinition.getRoot();
 
-		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 25.0F, 0.0F));
+		PartDefinition root = partdefinition.addOrReplaceChild("root", CubeListBuilder.create(), PartPose.offset(0.0F, 24.0F, 0.0F));
 
-		PartDefinition right_leg = root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 29).addBox(-1.5F, 0.0F, -2.0F, 3.0F, 11.0F, 4.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-1.5F, -12.0F, 0.0F));
+		PartDefinition right_leg = root.addOrReplaceChild("right_leg", CubeListBuilder.create().texOffs(0, 29).addBox(-1.5F, 0.0F, -2.0F, 3.0F, 11.0F, 4.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-1.5F, -11.0F, 0.0F));
 
-		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, -21.0F, 0.0F));
+		PartDefinition left_leg = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 29).mirror().addBox(-1.5F, 0.0F, -2.0F, 3.0F, 11.0F, 4.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(1.5F, -11.0F, 0.0F));
 
-		PartDefinition eyeL = head.addOrReplaceChild("eyeL", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.1F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).addBox(-3.0F, -9.0F, -2.0F, 6.0F, 9.0F, 4.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, -11.0F, 0.0F));
 
-		PartDefinition eyeR = head.addOrReplaceChild("eyeR", CubeListBuilder.create().texOffs(0, 0).mirror().addBox(-4.0F, -8.0F, -4.1F, 4.0F, 8.0F, 0.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(4.0F, 0.0F, 0.0F));
+		PartDefinition skirt = body.addOrReplaceChild("skirt", CubeListBuilder.create().texOffs(36, 40).addBox(-4.0F, 0.0F, -3.25F, 8.0F, 4.0F, 6.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, -4.0F, -0.25F));
 
-		PartDefinition hat = head.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.01F + size)), PartPose.offset(0.0F, 0.0F, 0.0F));
+		PartDefinition skirt_2 = skirt.addOrReplaceChild("skirt_2", CubeListBuilder.create().texOffs(34, 50).addBox(-4.0F, -0.5F, -4.0F, 8.0F, 7.0F, 7.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, 4.5F, 0.25F));
 
-		PartDefinition body = root.addOrReplaceChild("body", CubeListBuilder.create().texOffs(0, 16).mirror().addBox(-3.0F, 0.0F, -2.0F, 6.0F, 9.0F, 4.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(0.0F, -21.0F, 0.0F));
+		PartDefinition head = root.addOrReplaceChild("head", CubeListBuilder.create().texOffs(0, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 8.0F, 8.0F, new CubeDeformation(0.0F + size)), PartPose.offset(0.0F, -20.0F, 0.0F));
 
-		PartDefinition skirt = body.addOrReplaceChild("skirt", CubeListBuilder.create().texOffs(34, 50).mirror().addBox(-4.0F, -2.25F, -4.0F, 8.0F, 7.0F, 7.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(0.0F, 8.0F, 0.0F));
+		PartDefinition right_eye = head.addOrReplaceChild("right_eye", CubeListBuilder.create().texOffs(1, 4).addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-2.0F, -1.0F, -4.05F));
 
-		PartDefinition left_arm = root.addOrReplaceChild("left_arm", CubeListBuilder.create().texOffs(20, 24).addBox(0.0F, 0.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(0.0F + size)), PartPose.offset(2.75F, -21.0F, 0.0F));
+		PartDefinition left_eye = head.addOrReplaceChild("left_eye", CubeListBuilder.create().texOffs(3, 4).mirror().addBox(-1.0F, -3.0F, 0.0F, 2.0F, 3.0F, 0.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(2.0F, -1.0F, -4.05F));
 
-		PartDefinition left_leg = root.addOrReplaceChild("left_leg", CubeListBuilder.create().texOffs(0, 29).mirror().addBox(-1.5F, 0.0F, -2.0F, 3.0F, 11.0F, 4.0F, new CubeDeformation(0.0F + size)).mirror(false), PartPose.offset(1.5F, -12.0F, 0.0F));
+		PartDefinition hat = head.addOrReplaceChild("hat", CubeListBuilder.create().texOffs(32, 0).addBox(-4.0F, -8.0F, -4.0F, 8.0F, 10.0F, 8.0F, new CubeDeformation(0.01F + size)), PartPose.offset(0.0F, 0.0F, 0.0F));
 
-		PartDefinition right_arm = root.addOrReplaceChild("right_arm", CubeListBuilder.create().texOffs(28, 24).addBox(-2.0F, 0.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-3.0F, -21.0F, 0.0F));
+		PartDefinition right_hand = root.addOrReplaceChild("right_hand", CubeListBuilder.create().texOffs(20, 24).addBox(-2.0F, 0.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(0.0F + size)), PartPose.offset(-3.0F, -19.0F, 0.0F));
+
+		PartDefinition left_hand = root.addOrReplaceChild("left_hand", CubeListBuilder.create().texOffs(28, 24).addBox(0.0F, 0.0F, -1.0F, 2.0F, 10.0F, 2.0F, new CubeDeformation(0.0F + size)), PartPose.offset(3.0F, -19.0F, 0.0F));
 
 		return LayerDefinition.create(meshdefinition, 64, 64);
 	}
@@ -91,14 +91,12 @@ public class ModelLittleMaid_Elsa5<T extends LittleMaidBaseEntity> extends Model
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		float f3 = entity.tickCount + ageInTicks + entity.getId();
 		// 目パチ
-		if( 0 > mh_sin(f3 * 0.05F) + mh_sin(f3 * 0.13F) + mh_sin(f3 * 0.7F) + 2.55F) {
+		if (0 > mh_sin(f3 * 0.05F) + mh_sin(f3 * 0.13F) + mh_sin(f3 * 0.7F) + 2.55F) {
 			eyeR.visible = false;
 			eyeL.visible = false;
 		} else {
 			eyeR.visible = true;
 			eyeL.visible = true;
 		}
-
-		this.hat.copyFrom(this.head);
 	}
 }

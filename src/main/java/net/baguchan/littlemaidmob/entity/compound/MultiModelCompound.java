@@ -38,8 +38,6 @@ public class MultiModelCompound implements IHasMultiModel {
     private TextureColors color;
     private boolean isContract;
 
-    private boolean isMale;
-
     public MultiModelCompound(LivingEntity entity, TextureHolder defaultMainPackage, TextureHolder defaultArmorPackage) {
         this.entity = entity;
         this.defaultMainPackage = defaultMainPackage;
@@ -59,8 +57,8 @@ public class MultiModelCompound implements IHasMultiModel {
         }
         LMModelManager modelManager = LMModelManager.INSTANCE;
         skinModel = modelManager.getOrDefaultModel(skinTexHolder.getModelName(), Layer.SKIN);
-        skinTexture = new TexturePair(skinTexHolder.getTexture(color, isContract, false, isMale).orElse(null),
-                skinTexHolder.getTexture(color, isContract, true, isMale).orElse(null));
+        skinTexture = new TexturePair(skinTexHolder.getTexture(color, isContract, false).orElse(null),
+                skinTexHolder.getTexture(color, isContract, true).orElse(null));
     }
 
     public void updateArmor() {
@@ -202,16 +200,6 @@ public class MultiModelCompound implements IHasMultiModel {
     @Override
     public boolean isContract() {
         return isContract;
-    }
-
-    @Override
-    public void setMale(boolean male) {
-        isMale = male;
-    }
-
-    @Override
-    public boolean isMale() {
-        return isMale;
     }
 
     public void writeToNbt(CompoundTag nbt) {

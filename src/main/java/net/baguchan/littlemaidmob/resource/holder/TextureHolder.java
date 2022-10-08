@@ -5,7 +5,13 @@ import net.baguchan.littlemaidmob.resource.util.TextureColors;
 import net.baguchan.littlemaidmob.resource.util.TextureIndexes;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.util.Mth;
-import java.util.*;
+
+import java.util.Collection;
+import java.util.Comparator;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Objects;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 public class TextureHolder {
@@ -40,17 +46,14 @@ public class TextureHolder {
     }
 
     //男のテクスチャと女のテクスチャを識別する
-    public Optional<ResourceLocation> getTexture(TextureColors color, boolean isContract, boolean isLight, boolean isMale) {
+    public Optional<ResourceLocation> getTexture(TextureColors color, boolean isContract, boolean isLight) {
         int index = color.getIndex();
         if (isLight) {
             index += isContract ? TextureIndexes.COLOR_WILD_LIGHT.getIndexMin() : TextureIndexes.COLOR_CONTRACT_LIGHT.getIndexMin();
         } else if (!isContract) {
             index += TextureIndexes.COLOR_WILD.getIndexMin();
         }
-        if(textures.get(index) != null && (!isMale && !textures.get(index).getPath().contains("servant") || isMale && textures.get(index).getPath().contains("servant"))) {
-            return Optional.ofNullable(textures.get(index));
-        }
-        return Optional.empty();
+        return Optional.ofNullable(textures.get(index));
     }
 
     public Optional<ResourceLocation> getArmorTexture(IHasMultiModel.Layer layer, String armorName, float damagePercent, boolean isLight) {
@@ -117,10 +120,10 @@ public class TextureHolder {
     }
 
     //ここで男か女か決める
-    public boolean hasSkinTexture(boolean isContract, boolean male) {
+    public boolean hasSkinTexture(boolean isContract) {
         for (TextureColors color : TextureColors.values()) {
-            if (getTexture(color, isContract, false, male).isPresent()
-                    || getTexture(color, isContract, true, male).isPresent())
+            if (getTexture(color, isContract, false).isPresent()
+                    || getTexture(color, isContract, true).isPresent())
                 return true;
         }
         return false;

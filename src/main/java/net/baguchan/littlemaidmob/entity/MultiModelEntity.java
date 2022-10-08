@@ -1,4 +1,5 @@
 package net.baguchan.littlemaidmob.entity;
+
 import net.baguchan.littlemaidmob.entity.compound.IHasMultiModel;
 import net.baguchan.littlemaidmob.entity.compound.MultiModelCompound;
 import net.baguchan.littlemaidmob.entity.compound.SoundPlayable;
@@ -11,11 +12,7 @@ import net.baguchan.littlemaidmob.resource.manager.LMModelManager;
 import net.baguchan.littlemaidmob.resource.manager.LMTextureManager;
 import net.baguchan.littlemaidmob.resource.util.LMSounds;
 import net.baguchan.littlemaidmob.resource.util.TextureColors;
-import net.minecraft.client.Minecraft;
-import net.minecraft.core.Direction;
 import net.minecraft.nbt.CompoundTag;
-import net.minecraft.network.protocol.Packet;
-import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraft.world.InteractionHand;
 import net.minecraft.world.InteractionResult;
@@ -23,7 +20,6 @@ import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityDimensions;
 import net.minecraft.world.entity.EntityType;
 import net.minecraft.world.entity.EquipmentSlot;
-import net.minecraft.world.entity.LivingEntity;
 import net.minecraft.world.entity.Mob;
 import net.minecraft.world.entity.PathfinderMob;
 import net.minecraft.world.entity.Pose;
@@ -45,9 +41,6 @@ import java.util.Optional;
 public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, SoundPlayable {
     protected final MultiModelCompound multiModel;
     protected final SoundPlayableCompound soundPlayer;
-
-    protected boolean isMale;
-
     public MultiModelEntity(Level worldIn) {
         this(ModEntities.MULTI_MODEL.get(), worldIn);
     }
@@ -187,16 +180,6 @@ public class MultiModelEntity extends PathfinderMob implements IHasMultiModel, S
     @Override
     public boolean isContract() {
         return multiModel.isContract();
-    }
-
-    @Override
-    public void setMale(boolean isMale) {
-        multiModel.setMale(isMale);
-    }
-
-    @Override
-    public boolean isMale() {
-        return multiModel.isMale();
     }
 
     @Override

@@ -1,33 +1,56 @@
 package net.baguchan.littlemaidmob.entity;
 
-import net.baguchan.littlemaidmob.entity.compound.MultiModelCompound;
-import net.baguchan.littlemaidmob.entity.compound.SoundPlayableCompound;
+import net.baguchan.littlemaidmob.menutype.LittleMaidInventoryMenu;
 import net.baguchan.littlemaidmob.resource.holder.TextureHolder;
 import net.baguchan.littlemaidmob.resource.manager.LMConfigManager;
 import net.baguchan.littlemaidmob.resource.manager.LMModelManager;
 import net.baguchan.littlemaidmob.resource.manager.LMTextureManager;
 import net.baguchan.littlemaidmob.resource.util.TextureColors;
 import net.minecraft.nbt.CompoundTag;
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.InteractionHand;
+import net.minecraft.world.InteractionResult;
+import net.minecraft.world.SimpleContainer;
+import net.minecraft.world.SimpleMenuProvider;
 import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.EntityType;
-import net.minecraft.world.entity.LivingEntity;
-import net.minecraft.world.entity.PathfinderMob;
+import net.minecraft.world.entity.EquipmentSlot;
 import net.minecraft.world.entity.ai.navigation.GroundPathNavigation;
+import net.minecraft.world.entity.player.Player;
+import net.minecraft.world.item.Item;
+import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.level.Level;
-import net.minecraft.world.level.material.FluidState;
-import net.minecraft.world.phys.Vec3;
-import net.minecraftforge.fluids.FluidType;
+import net.minecraftforge.network.NetworkHooks;
 
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.concurrent.ThreadLocalRandom;
 
-//NM読み込むのに要る
 public class LittleMaidBaseEntity extends MultiModelEntity {
+
+    protected SimpleContainer inventory;
 
     public LittleMaidBaseEntity(EntityType<? extends MultiModelEntity> p_21683_, Level p_21684_) {
         super(p_21683_, p_21684_);
         ((GroundPathNavigation) getNavigation()).setCanPassDoors(true);
+    }
+
+    @Override
+    protected InteractionResult mobInteract(Player p_21472_, InteractionHand p_21473_) {
+        ItemStack itemstack = p_21472_.getItemInHand(p_21473_);
+        Item item = itemstack.getItem();
+        InteractionResult interactionresult = super.mobInteract(p_21472_, p_21473_);
+        if (!interactionresult.consumesAction()) {
+            if (p_21472_ instanceof ServerPlayer) {
+                NetworkHooks.openScreen((ServerPlayer) p_21472_,
+                        new SimpleMenuProvider((windowId, inv, playerEntity) ->
+                                new LittleMaidInventoryMenu(windowId, inv, this), Component.empty()),
+                        buf -> buf.writeVarInt(this.getId()));
+                return InteractionResult.SUCCESS;
+            }
+        }
+        return interactionresult;
     }
 
     @Override
@@ -41,6 +64,10 @@ public class LittleMaidBaseEntity extends MultiModelEntity {
                     getTextureHolder(Layer.INNER, part).getTextureName());
             nbt.putString("ArmorTextureOuter" + part.getPartName(),
                     getTextureHolder(Layer.OUTER, part).getTextureName());
+        }
+
+        if (!this.inventory.isEmpty()) {
+            nbt.put("Inventory", this.inventory.createTag());
         }
     }
 
@@ -71,6 +98,16 @@ public class LittleMaidBaseEntity extends MultiModelEntity {
             LMConfigManager.INSTANCE.getConfig(nbt.getString("SoundConfigName"))
                     .ifPresent(this::setConfigHolder);
 
+        this.inventory.fromTag(nbt.getList("Inventory", 10));
+    }
+
+    public SimpleContainer getInventory() {
+        return inventory;
+    }
+
+    protected void dropEquipment() {
+        super.dropEquipment();
+        this.inventory.removeAllItems().forEach(this::spawnAtLocation);
     }
 
     //マルチモデル関連
@@ -105,11 +142,11 @@ public class LittleMaidBaseEntity extends MultiModelEntity {
 
     public void setRandomTexture() {
         LMTextureManager.INSTANCE.getAllTextures().stream()
-                .filter(h -> h.hasSkinTexture(false, isMale()))//野生テクスチャである
+                .filter(h -> h.hasSkinTexture(false))//野生テクスチャである
                 .filter(h -> LMModelManager.INSTANCE.hasModel(h.getModelName()))//モデルがある
                 .min(Comparator.comparingInt(h -> ThreadLocalRandom.current().nextInt()))//ランダム抽出
                 .ifPresent(h -> Arrays.stream(TextureColors.values())
-                        .filter(c -> h.getTexture(c, false, false, isMale()).isPresent())
+                        .filter(c -> h.getTexture(c, false, false).isPresent())
                         .min(Comparator.comparingInt(c -> ThreadLocalRandom.current().nextInt()))
                         .ifPresent(c -> {
                             this.setColor(c);
@@ -127,4 +164,16 @@ public class LittleMaidBaseEntity extends MultiModelEntity {
                         }));
     }
 
+    @Override
+    public void setItemSlot(EquipmentSlot slot, ItemStack stack) {
+        if (slot.getType() == EquipmentSlot.Type.ARMOR) {
+            SimpleContainer inv = getInventory();
+            inv.setItem(1 + 18 + slot.getIndex(), stack);
+            multiModel.updateArmor();
+        } else if (slot == EquipmentSlot.MAINHAND) {
+            getInventory().setItem(0, stack);
+        } else if (slot == EquipmentSlot.OFFHAND) {
+            getInventory().setItem(18 + 4 + 1, stack);
+        }
+    }
 }
