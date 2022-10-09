@@ -1,0 +1,15 @@
+{
+  "required": true,
+  "package": "net.baguchan.bagus_littlemaidmob.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "minVersion": "0.8",
+  "refmap": "bagus_littlemaidmob.refmap.json",
+  "mixins": [
+  ],
+  "client": [
+    "client.EntityModelSetMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}
