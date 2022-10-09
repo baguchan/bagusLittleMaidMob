@@ -5,3 +5,4 @@ bagusLittleMaidMobのmodelの追加のしかたを書いたものです
 ## 注意
 
 modelにするには本家LittleMaidと同じようにコンパイルする必要があります。
+・・・が、動作確認済みではないのであしからず・・・
