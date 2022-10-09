@@ -11,6 +11,8 @@ import net.baguchan.bagus_littlemaidmob.resource.util.TextureColors;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.ListTag;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.protocol.Packet;
+import net.minecraft.network.protocol.game.ClientboundAddEntityPacket;
 import net.minecraft.network.syncher.EntityDataAccessor;
 import net.minecraft.network.syncher.EntityDataSerializers;
 import net.minecraft.network.syncher.SynchedEntityData;
@@ -446,6 +448,20 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 		}
 
 		private MoveState() {
+		}
+	}
+
+	public Packet<?> getAddEntityPacket() {
+		CompoundTag compoundTag = new CompoundTag();
+		multiModel.writeToNbt(compoundTag);
+		return new ClientboundAddMaidPacket(this, compoundTag);
+	}
+
+	public void recreateFromPacket(ClientboundAddEntityPacket p_218894_) {
+		super.recreateFromPacket(p_218894_);
+
+		if (p_218894_ instanceof ClientboundAddMaidPacket) {
+			multiModel.readFromNbt(((ClientboundAddMaidPacket) p_218894_).compoundTag);
 		}
 	}
 }
