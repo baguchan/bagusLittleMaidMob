@@ -430,6 +430,16 @@ public class LittleMaidBaseEntity extends MultiModelEntity implements ContainerL
 		}
 	}
 
+	@Override
+	public boolean isInSittingPose() {
+		return MoveState.get(this.getMovingState()) == MoveState.WAITING;
+	}
+
+	@Override
+	public boolean isOrderedToSit() {
+		return MoveState.get(this.getMovingState()) == MoveState.WAITING;
+	}
+
 	public enum MoveState {
 		WAITING, NORMAL, FREEDOM;
 

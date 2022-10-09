@@ -85,12 +85,12 @@ public class ModelLittleMaid_Elsa5<T extends MultiModelEntity> extends ModelLitt
 		super.setupAnim(entity, limbSwing, limbSwingAmount, ageInTicks, netHeadYaw, headPitch);
 		float f3 = entity.tickCount + ageInTicks + entity.getId();
 		// 目パチ
-		if (0 > mh_sin(f3 * 0.05F) + mh_sin(f3 * 0.13F) + mh_sin(f3 * 0.7F) + 2.55F) {
+		/*if (0 > mh_sin(f3 * 0.05F) + mh_sin(f3 * 0.13F) + mh_sin(f3 * 0.7F) + 2.55F) {
 			right_eye.visible = false;
 			left_eye.visible = false;
 		} else {
 			right_eye.visible = true;
 			left_eye.visible = true;
-		}
+		}*/
 	}
 }

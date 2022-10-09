@@ -1,5 +1,6 @@
 package net.baguchan.bagus_littlemaidmob.maidmodel;
 
+import com.mojang.blaze3d.vertex.PoseStack;
 import net.baguchan.bagus_littlemaidmob.client.animation.MaidAnimation;
 import net.baguchan.bagus_littlemaidmob.entity.LittleMaidBaseEntity;
 import net.baguchan.bagus_littlemaidmob.entity.MultiModelEntity;
@@ -11,6 +12,7 @@ import net.minecraft.client.model.geom.builders.LayerDefinition;
 import net.minecraft.client.model.geom.builders.MeshDefinition;
 import net.minecraft.client.model.geom.builders.PartDefinition;
 import net.minecraft.util.Mth;
+import net.minecraft.world.entity.HumanoidArm;
 
 /**
  * LMM用に最適化
@@ -18,8 +20,6 @@ import net.minecraft.util.Mth;
 public abstract class ModelLittleMaidBase<T extends MultiModelEntity> extends ModelMultiBase<T> {
 
 	//fields
-	public ModelPart torso;
-	public ModelPart neck;
 	public ModelPart head;
 	public ModelPart right_hand;
 	public ModelPart left_hand;
@@ -155,5 +155,16 @@ public abstract class ModelLittleMaidBase<T extends MultiModelEntity> extends Mo
 		if (entity instanceof LittleMaidBaseEntity) {
 			this.animate(((LittleMaidBaseEntity) entity).eyeBlinkAnimation, MaidAnimation.EYE_BLINK, ageInTicks);
 		}
+	}
+
+	protected ModelPart getArm(HumanoidArm p_102852_) {
+		return p_102852_ == HumanoidArm.LEFT ? this.left_hand : this.right_hand;
+	}
+
+	@Override
+	public void translateToHand(HumanoidArm p_102157_, PoseStack p_102158_) {
+		p_102158_.translate(0.0D, 1.5D, 0.0D);
+		this.getArm(p_102157_).translateAndRotate(p_102158_);
+
 	}
 }

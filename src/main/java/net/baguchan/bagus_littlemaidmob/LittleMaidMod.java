@@ -7,6 +7,7 @@ import net.baguchan.bagus_littlemaidmob.entity.compound.IHasMultiModel;
 import net.baguchan.bagus_littlemaidmob.maidmodel.ModelLittleMaid_Elsa5;
 import net.baguchan.bagus_littlemaidmob.maidmodel.ModelLittleMaid_Orign;
 import net.baguchan.bagus_littlemaidmob.message.SyncMultiModelPacket;
+import net.baguchan.bagus_littlemaidmob.message.SyncSetModePacket;
 import net.baguchan.bagus_littlemaidmob.message.SyncSoundConfigMessage;
 import net.baguchan.bagus_littlemaidmob.registry.ModEntities;
 import net.baguchan.bagus_littlemaidmob.registry.ModItems;
@@ -81,6 +82,10 @@ public class LittleMaidMod
 		CHANNEL.messageBuilder(SyncMultiModelPacket.class, 1)
 				.encoder(SyncMultiModelPacket::toBytes).decoder(SyncMultiModelPacket::new)
 				.consumerMainThread(SyncMultiModelPacket::handle)
+				.add();
+		CHANNEL.messageBuilder(SyncSetModePacket.class, 2)
+				.encoder(SyncSetModePacket::toBytes).decoder(SyncSetModePacket::new)
+				.consumerMainThread(SyncSetModePacket::handle)
 				.add();
 	}
 

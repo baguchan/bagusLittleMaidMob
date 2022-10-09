@@ -1,22 +1,23 @@
 package net.baguchan.bagus_littlemaidmob.maidmodel;
 
 import net.baguchan.bagus_littlemaidmob.entity.MultiModelEntity;
+import net.minecraft.client.model.ArmedModel;
 import net.minecraft.client.model.HierarchicalModel;
 import net.minecraft.util.Mth;
 
 import java.util.Random;
 
 //TextureOffsetは死んだ。
-public abstract class ModelBase<T extends MultiModelEntity> extends HierarchicalModel<T> implements IModelBase, IMultiModel<T> {
+public abstract class ModelBase<T extends MultiModelEntity> extends HierarchicalModel<T> implements IModelBase, IMultiModel<T>, ArmedModel {
 
-    public static final float PI = (float) Math.PI;
+	public static final float PI = (float) Math.PI;
 
     /*public ModelPart getRandomModelBox(Random par1Random) {
         return lmr;
     }*/
 
 
-    // Mthトンネル関数群
+	// Mthトンネル関数群
 
     public static float mh_sin(float f) {
         return Mth.sin(f);

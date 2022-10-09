@@ -5,6 +5,7 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.baguchan.bagus_littlemaidmob.entity.LittleMaidBaseEntity;
 import net.baguchan.bagus_littlemaidmob.entity.compound.IHasMultiModel;
 import net.baguchan.bagus_littlemaidmob.menutype.LittleMaidInventoryMenu;
+import net.baguchan.bagus_littlemaidmob.message.SyncSetModePacket;
 import net.baguchan.bagus_littlemaidmob.message.SyncSoundConfigMessage;
 import net.baguchan.bagus_littlemaidmob.resource.manager.LMConfigManager;
 import net.minecraft.client.gui.components.Button;
@@ -13,6 +14,7 @@ import net.minecraft.client.gui.screens.inventory.InventoryScreen;
 import net.minecraft.client.renderer.GameRenderer;
 import net.minecraft.network.chat.Component;
 import net.minecraft.resources.ResourceLocation;
+import net.minecraft.world.entity.Entity;
 import net.minecraft.world.entity.player.Inventory;
 import net.minecraft.world.item.ItemStack;
 import net.minecraft.world.item.Items;
@@ -85,7 +87,7 @@ public class LittleMaidScreen extends AbstractContainerScreen<LittleMaidInventor
 		});
 		this.addRenderableWidget(new Button(left - size, top + size * ++layer, size, size, Component.literal(""),
 				button -> {
-					maid.setMovingState(LittleMaidBaseEntity.MoveState.get(maid.getMovingState()) == LittleMaidBaseEntity.MoveState.FREEDOM
+					SyncSetModePacket.sendC2SPacket((Entity) maid, LittleMaidBaseEntity.MoveState.get(maid.getMovingState()) == LittleMaidBaseEntity.MoveState.FREEDOM
 							? LittleMaidBaseEntity.MoveState.WAITING
 							: LittleMaidBaseEntity.MoveState.FREEDOM);
 				}) {

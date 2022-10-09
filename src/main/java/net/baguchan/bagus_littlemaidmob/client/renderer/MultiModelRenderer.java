@@ -4,16 +4,18 @@ import com.mojang.blaze3d.vertex.PoseStack;
 import net.baguchan.bagus_littlemaidmob.LittleMaidMod;
 import net.baguchan.bagus_littlemaidmob.entity.MultiModelEntity;
 import net.baguchan.bagus_littlemaidmob.entity.compound.IHasMultiModel;
+import net.baguchan.bagus_littlemaidmob.maidmodel.ModelBase;
 import net.baguchan.bagus_littlemaidmob.maidmodel.ModelMultiBase;
-import net.minecraft.client.model.EntityModel;
 import net.minecraft.client.renderer.MultiBufferSource;
 import net.minecraft.client.renderer.entity.EntityRendererProvider;
 import net.minecraft.client.renderer.entity.MobRenderer;
+import net.minecraft.client.renderer.entity.layers.ItemInHandLayer;
 import net.minecraft.resources.ResourceLocation;
 import net.minecraftforge.api.distmarker.Dist;
 import net.minecraftforge.api.distmarker.OnlyIn;
+
 @OnlyIn(Dist.CLIENT)
-public class MultiModelRenderer<T extends MultiModelEntity> extends MobRenderer<T, EntityModel<T>> {
+public class MultiModelRenderer<T extends MultiModelEntity> extends MobRenderer<T, ModelBase<T>> {
     private static final ResourceLocation NULL_TEXTURE = new ResourceLocation(LittleMaidMod.MODID, "null");
 
     private ModelMultiBase<T> base;
@@ -22,6 +24,7 @@ public class MultiModelRenderer<T extends MultiModelEntity> extends MobRenderer<
 
     public MultiModelRenderer(EntityRendererProvider.Context ctx) {
         super(ctx, new NullModel<>(), 0.5F);
+        this.addLayer(new ItemInHandLayer<>(this, ctx.getItemInHandRenderer()));
     }
 
     @Override
